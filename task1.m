@@ -8,7 +8,7 @@ x0 = mvnrnd(0, sigma_x0, 1);
 x_minus = [x0];
 E_minus = [1];
 
-% сгенерируем помехи
+% Г±ГЈГҐГ­ГҐГ°ГЁГ°ГіГҐГ¬ ГЇГ®Г¬ГҐГµГЁ
 sigma_v = 30;
 sigma_w = 20;
 
@@ -22,7 +22,7 @@ for i = 1 : N
     w(i) = mvnrnd(0, sigma_w);
 end
 
-% x и y
+% x ГЁ y
 x  = zeros(1, N);
 y  = zeros(1, N);
 x(1) = x0;
@@ -33,13 +33,13 @@ for i = 2 : N
     y(i) = C * x(i) + w(i);
 end
 
-% строим фильтр Каллмана
+% Г±ГІГ°Г®ГЁГ¬ ГґГЁГ«ГјГІГ° ГЉГ Г«Г«Г¬Г Г­Г 
 for k=2:N
     x_minus = [x_minus; x_minus(k-1) + (E_minus(k-1)*(1/(sigma_w+E_minus(k-1)))) * (y(k-1)-x_minus(k-1))];
     E_minus = [E_minus; 1/(1/E_minus(k-1) + 1/20) + 30];
 end
 
-% стационарный фильтр Каллмана
+% Г±ГІГ Г¶ГЁГ®Г­Г Г°Г­Г»Г© ГґГЁГ«ГјГІГ° ГЉГ Г«Г«Г¬Г Г­Г 
 E_star = 15 + 5 * sqrt(33);
 x_minus_star = [x0];
 K_k = E_star / (E_star + sigma_w);
@@ -47,7 +47,7 @@ for k=2:N
     x_minus_star = [x_minus_star; x_minus_star(k-1) + K_k * (y(k-1)-x_minus_star(k-1))];
 end
 
-% x и y
+% x ГЁ y
 x_bezpomeh  = zeros(1, N);
 y_bezpomeh  = zeros(1, N);
 x_bezpomeh(1) = x0;
@@ -58,7 +58,7 @@ for i = 2 : N
     y_bezpomeh(i) = C * x_bezpomeh(i);
 end
 
-% фильтр Каллмана
+% ГґГЁГ«ГјГІГ° ГЉГ Г«Г«Г¬Г Г­Г 
 x_minus_bezpomeh = [x0];
 E_minus_bezpomeh = [1];
 for k=2:N
@@ -66,7 +66,7 @@ for k=2:N
 end
 disp(x0)
 
-% апостериорная оценка
+% Г ГЇГ®Г±ГІГҐГ°ГЁГ®Г°Г­Г Гї Г®Г¶ГҐГ­ГЄГ 
 x_plus = [x0];
 E_plus =[sigma_w/(sigma_w+1)];
 
@@ -80,20 +80,20 @@ subplot(1, 1, 1)
     grid on;
     xlabel('k');
     ylabel('x');
-    legend({'Истинное x', 'Априорная оценка x', 'Априорн. оценка через стационарный фильтр'}, 'Location', 'northeast');
+    legend({'Г€Г±ГІГЁГ­Г­Г®ГҐ x', 'ГЂГЇГ°ГЁГ®Г°Г­Г Гї Г®Г¶ГҐГ­ГЄГ  x', 'ГЂГЇГ°ГЁГ®Г°Г­. Г®Г¶ГҐГ­ГЄГ  Г·ГҐГ°ГҐГ§ Г±ГІГ Г¶ГЁГ®Г­Г Г°Г­Г»Г© ГґГЁГ«ГјГІГ°'}, 'Location', 'northeast');
 figure;
     subplot(1, 1, 1)
     plot(1:N, x_minus_star-x_minus, 'b');
-    legend('Невязка для априорной оценки и апр оценки через стационарный фильтр', 'Location', 'northeast');
+    legend('ГЌГҐГўГїГ§ГЄГ  Г¤Г«Гї Г ГЇГ°ГЁГ®Г°Г­Г®Г© Г®Г¶ГҐГ­ГЄГЁ ГЁ Г ГЇГ° Г®Г¶ГҐГ­ГЄГЁ Г·ГҐГ°ГҐГ§ Г±ГІГ Г¶ГЁГ®Г­Г Г°Г­Г»Г© ГґГЁГ«ГјГІГ°', 'Location', 'northeast');
 figure;
     subplot(1, 1, 1)
     plot(1:N, x_bezpomeh, 'b', 1:N, x_minus_bezpomeh, 'r');
-    legend({'Истинное x без помех', 'Априорная оценка x без помех'}, 'Location', 'northeast');
+    legend({'Г€Г±ГІГЁГ­Г­Г®ГҐ x ГЎГҐГ§ ГЇГ®Г¬ГҐГµ', 'ГЂГЇГ°ГЁГ®Г°Г­Г Гї Г®Г¶ГҐГ­ГЄГ  x ГЎГҐГ§ ГЇГ®Г¬ГҐГµ'}, 'Location', 'northeast');
 figure;
 subplot(1, 1, 1)
     plot(1:N, x, 'g', 1:N, x_minus, 'b', 1:N, x_plus, 'black')
     grid on;
     xlabel('k');
     ylabel('x');
-    legend({'Истинное x', 'Априорная оценка x', 'Апостериорная оценка'}, 'Location', 'northeast');
+    legend({'Г€Г±ГІГЁГ­Г­Г®ГҐ x', 'ГЂГЇГ°ГЁГ®Г°Г­Г Гї Г®Г¶ГҐГ­ГЄГ  x', 'ГЂГЇГ®Г±ГІГҐГ°ГЁГ®Г°Г­Г Гї Г®Г¶ГҐГ­ГЄГ '}, 'Location', 'northeast');
 end
